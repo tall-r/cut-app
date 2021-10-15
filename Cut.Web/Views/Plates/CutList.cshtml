@@ -1,0 +1,99 @@
+@model IEnumerable<Cut.Data.PlankSet>
+
+@{
+    ViewData["Title"] = "Карта распила досок";
+}
+
+<div class="">
+    <a href="#summary">Сводная таблица</a>
+</div>
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+</div>
+<div class="text-left">
+    <div class="container">
+@foreach (var plate in Model) {
+    <div class="row pt-1 pt-1 border-dark">
+        <div class="col border text-center p-3 fs-4 fw-bold" style="background-color: lightslategray; color: whitesmoke;">
+            @if (plate.LibItem != null) {
+                <span>@plate.ToString()</span>
+                <span>(@plate.PlankLength мм)</span>
+            }
+            else {
+                <span>@plate.PlankSize.Width x @plate.PlankSize.Height</span>
+            }
+        </div>
+    </div>
+    @foreach(var p in plate.Planks.OrderBy(p => p.Cuts[0].Name)) {
+        <div class="row pt-1 border-dark">
+        @{
+            Dictionary<Cut.Data.Cut, int> cutsize = new Dictionary<Cut.Data.Cut, int>();
+            
+            foreach(var c in p.Cuts) {
+                double j = (double)c.Length / plate.PlankLength;
+                int k1 = (int)Math.Round(12 * j, MidpointRounding.AwayFromZero);
+                if (k1 < 1) k1 = 1;
+                cutsize[c] = k1;
+            }
+
+            int cl = 0;
+            Cut.Data.Settings cfg = (Cut.Data.Settings)ViewData["cfg"];
+            
+            if (p.GetUnusedLength(cfg.BladeWidth) > cfg.MaxCutOff) cl += 1;
+
+            cl += cutsize.Sum( c => c.Value );
+
+            while (cl > 12) {
+                int _max = cutsize.Values.Max();
+                //cl = cutsize.Sum( c => c.Value );
+                var k = (cl % 2 == 0) ? cutsize.First(c => c.Value == _max ).Key : cutsize.Last(c => c.Value == _max ).Key;
+                cutsize[k] = _max - 1;
+                cl--;
+            }
+
+            if (cl < 12) cl = 12;
+        }
+        @foreach (var c in p.Cuts) {
+            int k1 = cutsize[c];
+            cl -= k1;
+            <div class="col-md-@k1 pr-2 fs-4 border"  style="background-color: lightgray;">
+                <span class="small">@c.Name</span><br/>
+                <span>(@c.Length мм)</span>
+            </div>
+        }
+        @if (cl > 0 && p.GetUnusedLength(cfg.BladeWidth) > cfg.MaxCutOff) {
+            //int k2 = 12 - cuts;
+            //cl = 12 - cuts;
+            //cl--;
+            <div class="col-md-@cl pr-2 border fs-5 small text-right align-middle">
+                (@p.GetUnusedLength(cfg.BladeWidth) мм)
+            </div>
+        }
+        </div>
+    }
+}
+    </div>
+</div>
+
+<div class="text-center"><a name="summary" />
+    <h3 class="display-4">Сводная таблица</h1>
+</div>
+<div class="grid">
+    <div class="row header">
+        <div class="col-md-8">Доска</div>
+        <div class="col-md-2 text-right">Кол-во</div>
+        <div class="col-md-2 text-right">Объём (факт. / магазин), м3</div>
+    </div>
+    @foreach(var p in Model) {
+        <div class="row">
+            <div class="col-md-8">@p.ToString()</div>
+            <div class="col-md-2 text-right">@p.Planks.Count</div>
+            <div class="col-md-2 text-right">@string.Format("{0:0.00} / {1:0.00}", (double)p.Volume / Math.Pow(1000, 3), (double)@p.AVolume / Math.Pow(1000, 3))</div>
+        </div>
+    }
+</div>
+<div class="pt-4">
+    <div class="text-right">
+        <a href="#" class="">Вверх</a>
+    </div>
+</div>

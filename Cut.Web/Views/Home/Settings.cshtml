@@ -1,0 +1,30 @@
+﻿@model Cut.Data.Settings
+@{
+    ViewData["Title"] = "Настройки";
+}
+
+<div class="text-left">
+    <h1 class="text-center">@ViewData["Title"]</h1>
+@using(Html.BeginForm("SaveSettings", "Home", null, FormMethod.Post, null, new { @class = "row g-3"} )) {
+    <div class="col-md-9">
+        @Html.LabelFor(m => m.BladeWidth, "Толщина диска пилы (мм)", new { @class = "form-label" } ) 
+    </div>
+    <div class="col-md-3" style="width:60px;">
+        @Html.EditorFor(m => m.BladeWidth, null, new { @class = "form-control"})
+    </div>
+    <div class="col-md-9">
+        @Html.LabelFor(m => m.MaxCutOff, "Максимально допустимый остаток доски при распиле (мм)", new { @class = "form-label" }) 
+    </div>
+    <div class="col-md-3" style="width:60px;">
+        @Html.EditorFor(m => m.MaxCutOff, null, new { @class = "form-control" })
+    </div>
+    <div class="col-md-9">
+        @Html.LabelFor(m => m.DefaultPlankLength, "Стандартная длина доски (мм)", new { @class = "form-label" } )
+    </div>
+    <div class="col-md-3" style="width:60px;">
+        @Html.EditorFor(m => m.DefaultPlankLength, null, new { @class = "form-control" })
+    </div>
+    <div class="col-12 text-center"><button type="submit" class="col-3">Сохранить</button></div>
+}
+</div>
+

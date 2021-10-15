@@ -1,0 +1,9 @@
+/Users/filippk/projects/Cut/Cut.Data/bin/Debug/netcoreapp3.1/Cut.Data.deps.json
+/Users/filippk/projects/Cut/Cut.Data/bin/Debug/netcoreapp3.1/Cut.Data.dll
+/Users/filippk/projects/Cut/Cut.Data/bin/Debug/netcoreapp3.1/Cut.Data.pdb
+/Users/filippk/projects/Cut/Cut.Data/obj/Debug/netcoreapp3.1/Cut.Data.csprojAssemblyReference.cache
+/Users/filippk/projects/Cut/Cut.Data/obj/Debug/netcoreapp3.1/Cut.Data.AssemblyInfoInputs.cache
+/Users/filippk/projects/Cut/Cut.Data/obj/Debug/netcoreapp3.1/Cut.Data.AssemblyInfo.cs
+/Users/filippk/projects/Cut/Cut.Data/obj/Debug/netcoreapp3.1/Cut.Data.csproj.CoreCompileInputs.cache
+/Users/filippk/projects/Cut/Cut.Data/obj/Debug/netcoreapp3.1/Cut.Data.dll
+/Users/filippk/projects/Cut/Cut.Data/obj/Debug/netcoreapp3.1/Cut.Data.pdb

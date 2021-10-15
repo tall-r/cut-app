@@ -1,0 +1,26 @@
+﻿@model FileModel
+@{
+    ViewData["Title"] = "Помощник в подготовке карт распила досок";
+}
+
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+</div>
+<div class="text-left">
+    <p>Подготовьте файл со списком стоек, балок и прочего в формате CSV вида<br/>
+    "Width";"Height";"Name";"Length";"Qty"<br/>
+    где:<br/>
+    <ul>
+        <li><strong>Width</strong> - ширина доски/бруска на ребре, например 50</li>
+        <li><strong>Height</strong> - высота доски/бруска на ребре, например 150</li>
+        <li><strong>Name</strong> - название элемента (стойки, балки)</li>
+        <li><strong>Length</strong> - длина элемента</li>
+        <li><strong>Qty</strong> - количество элементов, например 40 стоек одного размера</li>
+    </ul>
+    </p>
+    
+    @using ( Html.BeginForm("CutList", "Plates", null, FormMethod.Post, null, new { @class = "row g-3", @enctype = "multipart/form-data"}) ) {
+        <div class="row">@Html.TextBoxFor(m => m.File, null, new { @class = "form-control", @type="file"})</div>
+        <div class="row"><button type="submit">Загрузить</button></div>
+    }
+</div>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<lib>
+	<planks>
+	<!--
+		<plank 
+			name=""					- *Название доски 
+			width="" height="" 		- *Фактические размеры доски (сечение)
+			length="6000" 			- Длина доски 
+			awidth="" aheight="" 	- "магазинный" размер доски
+		/>
+	
+		Поля name, width и height - обязательные
+		Поля length,			- необязательное, при отсутствии значения будет использован параметр DefaultPlankLength из конфигурационного файла
+			 awidth, aheight	- необязательное, при отсутствии значения будет использованы значения полей width и height
+	-->
+		<plank name="Доска СС 45х190" width="45" height="190" awidth="50" aheight="200" />
+		<plank name="Доска СС 45х140" width="45" height="140" awidth="50" aheight="150" />
+		<plank name="Доска СС 45х90" width="45" height="90" awidth="50" aheight="100" />
+		<plank name="Доска ЕВ 25х125" width="25" height="125" />
+		<plank name="Доска ЕВ 50х100" width="50" height="100" />
+		<plank name="Доска ЕВ 50х150" width="50" height="150" />
+		<plank name="Доска ЕВ 50х200" width="50" height="200" />
+		<plank name="Брус ЕВ 100х100" width="100" height="100" />
+		<plank name="Брус ЕВ 150х150" width="150" height="150" />
+		<plank name="Брусок ЕВ 50х50" width="50" height="50" length="3000" />
+		<plank name="Брусок СС 45х45" width="45" height="45" length="3000" />
+	</planks>
+</lib>
