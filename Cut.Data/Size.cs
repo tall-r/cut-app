@@ -1,6 +1,6 @@
 ﻿/*
  * Created by SharpDevelop.
- * User: kiril
+ * User: Tall
  * Date: 10.07.2017
  * Time: 21:28
  * 
@@ -69,6 +69,54 @@ namespace Cut.Data
 		public override string ToString()
 		{
 			return string.Format("[Size Width={0}, Height={1}]", Width, Height);
+		}
+
+	}
+
+	public class Position {
+
+		public Position(){
+			
+		}
+
+		public Position(int x, int y){
+			this.X = x;
+			this.Y = y;
+		}
+
+		public int X { get; set; }
+		public int Y { get; set; }
+
+		public override string ToString(){
+			return string.Format("{0}:{1}", this.X, this.Y);
+		}
+
+		public void MoveX(int deltaX) {
+			this.X += deltaX;
+		}
+
+		public void MoveY(int deltaY) {
+			this.Y += deltaY;
+		}
+
+		/// <summary>
+		/// Смещает текущую точку
+		/// </summary>
+		/// <param name="s"></param>
+		public void Move(Size s) {
+			this.X += s.Width;
+			this.Y += s.Height;
+		}
+
+		/// <summary>
+		/// Возвращает новую точку, смещенную от текущей на указаный размер
+		/// </summary>
+		/// <param name="s">Размер, на который сместить</param>
+		/// <returns></returns>
+		public Position Shift(Size s) {
+			Position p = new Position(this.X, this.Y);
+			p.Move(s);
+			return p;
 		}
 
 	}
