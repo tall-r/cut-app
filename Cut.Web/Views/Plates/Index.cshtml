@@ -2,13 +2,13 @@
 @{
     ViewData["Title"] = "Помощник в подготовке карт распила досок";
 }
-
+    
 <div class="text-center">
-    <h1 class="display-4">@ViewData["Title"]</h1>
+    <p class="h2">@ViewData["Title"]</p>
 </div>
 <div class="text-left">
-    <p>Подготовьте файл со списком стоек, балок и прочего в формате CSV вида<br/>
-    "Width";"Height";"Name";"Length";"Qty"<br/>
+    <p>Подготовьте файл со списком стоек, балок и прочего в формате CSV следующего вида:<br/>
+    <span style="padding-left: 5em;">"Width","Height","Name","Length","Qty"</span><br/>
     где:<br/>
     <ul>
         <li><strong>Width</strong> - ширина доски/бруска на ребре, например 50</li>
@@ -18,9 +18,14 @@
         <li><strong>Qty</strong> - количество элементов, например 40 стоек одного размера</li>
     </ul>
     </p>
-    
-    @using ( Html.BeginForm("CutList", "Plates", null, FormMethod.Post, null, new { @class = "row g-3", @enctype = "multipart/form-data"}) ) {
-        <div class="row">@Html.TextBoxFor(m => m.File, null, new { @class = "form-control", @type="file"})</div>
-        <div class="row"><button type="submit">Загрузить</button></div>
-    }
+    <p>Совет: <i>Подотовьте файл в Excel, а затем сохраните его как CSV-файл в кодировке UTF-8.</i></p>
+</div>    
+
+<div class="container">
+@using ( Html.BeginForm("CutList", "Plates", null, FormMethod.Post, null, new { @enctype = "multipart/form-data"}) ) {
+    <div class="row">
+        <div class="col-md-9">@Html.TextBoxFor(m => m.File, null, new { @class = "form-control", @type="file"})</div>
+        <div class="col-md-3"><button type="submit" class="btn btn-primary">Загрузить</button></div>
+    </div>
+}
 </div>

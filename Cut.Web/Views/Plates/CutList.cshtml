@@ -2,18 +2,19 @@
 
 @{
     ViewData["Title"] = "Карта распила досок";
+    int r = 0;
 }
 
-<div class="">
+<div>
     <a href="#summary">Сводная таблица</a>
 </div>
 <div class="text-center">
-    <h1 class="display-4">@ViewData["Title"]</h1>
+    <p class="h2">@ViewData["Title"]</p>
 </div>
 <div class="text-left">
     <div class="container">
 @foreach (var plate in Model) {
-    <div class="row pt-1 pt-1 border-dark">
+    <div class="row pt-1 border-dark @(r > 0 ? "pb-ba" : "pb-bn") pb-in">
         <div class="col border text-center p-3 fs-4 fw-bold" style="background-color: lightslategray; color: whitesmoke;">
             @if (plate.LibItem != null) {
                 <span>@plate.ToString()</span>
@@ -22,10 +23,11 @@
             else {
                 <span>@plate.PlankSize.Width x @plate.PlankSize.Height</span>
             }
+            @{ r++; }
         </div>
     </div>
     @foreach(var p in plate.Planks.OrderBy(p => p.Cuts[0].Name)) {
-        <div class="row pt-1 border-dark">
+        <div class="row pt-1 border-dark pb-in">
         @{
             Dictionary<Cut.Data.Cut, int> cutsize = new Dictionary<Cut.Data.Cut, int>();
             
@@ -75,22 +77,35 @@
     </div>
 </div>
 
-<div class="text-center"><a name="summary" />
-    <h3 class="display-4">Сводная таблица</h1>
+<div class="text-center pb-ba pb-in">
+    <a name="summary" />
+    <p class="h2">Сводная таблица</p>
 </div>
 <div class="grid">
-    <div class="row header">
+    <div class="row header pt-1 pb-in fw-bold" style="border-bottom: solid 2px black">
         <div class="col-md-8">Доска</div>
         <div class="col-md-2 text-right">Кол-во</div>
         <div class="col-md-2 text-right">Объём (факт. / магазин), м3</div>
     </div>
+    @{
+        int plankCount = 0;
+        double vol = 0.0, avol = 0.0;
+    }
     @foreach(var p in Model) {
-        <div class="row">
+        plankCount += p.Planks.Count;
+        vol += (double)p.Volume / Math.Pow(1000, 3);
+        avol += (double)p.AVolume / Math.Pow(1000, 3);
+        <div class="row pb-in">
             <div class="col-md-8">@p.ToString()</div>
             <div class="col-md-2 text-right">@p.Planks.Count</div>
             <div class="col-md-2 text-right">@string.Format("{0:0.00} / {1:0.00}", (double)p.Volume / Math.Pow(1000, 3), (double)@p.AVolume / Math.Pow(1000, 3))</div>
         </div>
     }
+    <div class="row header pt-1 pb-in fw-bold" style="border-top: solid 2px black">
+        <div class="col-md-8">&nbsp;</div>
+        <div class="col-md-2 text-right">@plankCount</div>
+        <div class="col-md-2 text-right">@string.Format("{0:0.00} / {1:0.00}", vol, avol)</div>
+    </div>
 </div>
 <div class="pt-4">
     <div class="text-right">

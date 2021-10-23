@@ -4,7 +4,8 @@
 }
 
 <div class="text-left">
-    <h1 class="text-center">@ViewData["Title"]</h1>
+    <p class="h2 text-center">@ViewData["Title"]</p>
+    <blockquote class="blockquote pl-2"><em>Внимание! Настройки будут сохраненны в куки.</em></blockquote>
 @using(Html.BeginForm("SaveSettings", "Home", null, FormMethod.Post, null, new { @class = "row g-3"} )) {
     <div class="col-md-9">
         @Html.LabelFor(m => m.BladeWidth, "Толщина диска пилы (мм)", new { @class = "form-label" } ) 
@@ -24,7 +25,7 @@
     <div class="col-md-3" style="width:60px;">
         @Html.EditorFor(m => m.DefaultPlankLength, null, new { @class = "form-control" })
     </div>
-    <div class="col-12 text-center"><button type="submit" class="col-3">Сохранить</button></div>
+    <div class="col-md-12 text-center"><button type="submit" class="btn btn-primary">Сохранить</button></div>
 }
 </div>
 

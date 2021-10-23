@@ -3,9 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Подготовка карты распила досок" />
+    <meta name="keywords" content="cut,list,карта,распила,доски,расчет,объема" />
     <title>@ViewData["Title"] - CUT</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/print.css" />
 </head>
 <body>
     <header>
@@ -24,9 +27,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Plates" asp-action="Index">Распил досок</a>
                         </li>
-                        <li class="nav-item">
+                        <!-- li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Sheets" asp-action="Index">Распил листов</a>
-                        </li>
+                        </li -->
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Settings">Настройки</a>
                         </li>
@@ -42,8 +45,12 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy;Tall, 2017-2021 - CUT
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col text-left">&copy;Tall, 2017-2021 - CUT</div>
+                <div class="col-auto text-right"><a href="https://www.forumhouse.ru/threads/412315/" target="_blank">FORUMHOUSE</a></div>
+                <div class="col-auto text-right"><a href="https://github.com/tall-r/cut-app" target="_blank">GitHub</a></div>
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

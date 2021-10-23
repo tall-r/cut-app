@@ -1,0 +1,12 @@
+
+.pb-bn {
+    page-break-before: avoid;
+}
+
+.pb-ba {
+    page-break-before: always;
+}
+
+.pb-in {
+    page-break-inside: avoid;
+}
