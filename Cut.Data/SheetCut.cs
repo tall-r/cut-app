@@ -37,9 +37,24 @@ namespace Cut.Data
         /// <value></value>
         public Size Size { get; set; }
 
+        public void SwapSize() {
+            int h = this.Size.Height;
+            this.Size.Height = this.Size.Width;
+            this.Size.Width = h;
+        }
+
         public override string ToString()
         {
             return this.Name;
+        }
+
+        public Dictionary<string,string> AsJsonData() {
+            Dictionary<string,string> res = new Dictionary<string, string>();
+            res["name"] = this.Name;
+            res["height"] = this.Size.Height.ToString();
+            res["width"] = this.Size.Width.ToString();
+
+            return res;
         }
     }
 }

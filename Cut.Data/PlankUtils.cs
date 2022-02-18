@@ -17,7 +17,7 @@ namespace Cut.Data
 	/// <summary>
 	/// Description of Util.
 	/// </summary>
-	public static class Util
+	public static class PlankUtils
 	{
 		public static bool Between(this int value, int min, int max) {
 			return ((value >= min) && (value <= max));
@@ -73,7 +73,7 @@ namespace Cut.Data
 		}
 		
 		public static IEnumerable<PlankSet> GenerateCutList(Settings cfg, PlankLib lib, IEnumerable<Cut> cuts){
-			List<PlankSet> plankSets = Util.GetPlankSets(cuts, cfg.DefaultPlankLength);
+			List<PlankSet> plankSets = PlankUtils.GetPlankSets(cuts, cfg.DefaultPlankLength);
 			
 			foreach (var ps in plankSets) {
 				
@@ -84,7 +84,7 @@ namespace Cut.Data
 					ps.PlankLength = libItem.Length;
 				}
 				
-				Util.CalculatePlankSet(cfg, ps, cuts);
+				PlankUtils.CalculatePlankSet(cfg, ps, cuts);
 			}
 			
 			return plankSets;

@@ -46,7 +46,7 @@ namespace Cut.Web.Controllers
                 cfg = JsonSerializer.Deserialize<Cut.Data.Settings>(jsonST);
             }
 
-            var cuts = Util.LoadCuts(model.File.OpenReadStream());
+            var cuts = PlankUtils.LoadCuts(model.File.OpenReadStream());
 
             PlankLib lib = null;
 
@@ -62,7 +62,7 @@ namespace Cut.Web.Controllers
 
             //PlankLib lib = new PlankLib();
 
-            var plates = Util.GenerateCutList(cfg, lib, cuts);
+            var plates = PlankUtils.GenerateCutList(cfg, lib, cuts);
 
             ViewData["cfg"] = cfg;
             return View(plates);
