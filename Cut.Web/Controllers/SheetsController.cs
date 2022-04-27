@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Cut.Web.Models;
 using Cut.Data;
 using System.Text.Json;
+//using System.Web.Mvc.Html;
 
 namespace Cut.Web.Controllers
 {
@@ -24,6 +25,48 @@ namespace Cut.Web.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index([Bind("SheetWidth,SheetHeight,AllowRotation,File")] SheetFileModel sheetModel) {
+            if (ModelState.IsValid) {
+                // _context.Add(sheetModel);
+                // await _context.SavechangesAsync();
+                return View(sheetModel);
+            }
+
+            return View(sheetModel);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CutList([Bind("SheetWidth,SheetHeight,AllowRotation,File")] SheetFileModel model) {
+            if (!ModelState.IsValid || model.SheetHeight < model.SheetWidth) {
+                return Error();
+            }
+            
+            Settings cfg = new Settings();
+            if (HttpContext.Request.Cookies.ContainsKey("cut-settings")) {
+                string jsonST = HttpContext.Request.Cookies["cut-settings"];
+                cfg = JsonSerializer.Deserialize<Cut.Data.Settings>(jsonST);
+            }
+
+            cfg.MaxCutOff = 20;
+
+            List<SheetCut> list = Cut.Data.SheetCut.LoadCuts(model.File.OpenReadStream(), System.Text.Encoding.UTF8);
+
+            List<SheetCut> wrongCuts = new List<SheetCut>();
+
+            var data = SheetUtils.GenerateSheets(list, wrongCuts, model.SheetSize, model.AllowRotation, cfg);
+
+            var cutModel = new SheetCutsModel();
+            cutModel.SheetSize = model.SheetSize;
+            cutModel.Sheets = data;
+            cutModel.WrongSheets = wrongCuts;
+
+            return View(cutModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

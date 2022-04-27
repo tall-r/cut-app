@@ -29,6 +29,11 @@ namespace Cut.Data
 
         }
 
+        public SheetCut(string name, int width, int height)
+            :this(name, new Size(width, height)) {
+
+        }
+
         public string Name { get; set; }
 
         /// <summary>
@@ -55,6 +60,36 @@ namespace Cut.Data
             res["width"] = this.Size.Width.ToString();
 
             return res;
+        } 
+
+        public static List<SheetCut> LoadCuts(System.IO.Stream stream, System.Text.Encoding enc){
+            List<SheetCut> cuts = new List<SheetCut>();
+            using(System.IO.StreamReader sr = new System.IO.StreamReader(stream, enc)) {
+  				string firstLine = sr.ReadLine();
+				List<string> fields = new List<string>();
+				fields.AddRange(firstLine.Split(';'));
+				
+				while (!sr.EndOfStream){
+					string buf = sr.ReadLine();
+					string[] values = buf.Split(';');
+
+                    string name = values[fields.IndexOf("Name")];
+                    int qty = 0;
+                    if (!int.TryParse(values[fields.IndexOf("Qty")], out qty)) {
+                        qty = 0;
+                    }
+
+                    int width = Convert.ToInt32(values[fields.IndexOf("Width")]);
+                    int length = Convert.ToInt32(values[fields.IndexOf("Length")]);
+
+                    for (int i=1; i <= qty; i++) {
+                        SheetCut cut = new SheetCut(name, width, length);
+                        cuts.Add(cut);
+                    }
+                }
+            }
+
+            return cuts;
         }
     }
 }
