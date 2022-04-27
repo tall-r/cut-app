@@ -16,4 +16,19 @@ namespace Cut.Web.Models
         [Required]
         public IFormFile  File { get; set; }
     }
+
+    public class SheetFileModel: FileModel
+    {
+        public SheetFileModel(bool allowRotation) 
+        {
+            this.AllowRotation = allowRotation;
+        }
+
+        public SheetFileModel(): this(false) {
+
+        }
+
+        [Default(false)]
+        public bool AllowRotation { get; set; }
+    }
 }

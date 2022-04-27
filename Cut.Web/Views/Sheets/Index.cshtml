@@ -1,10 +1,44 @@
-﻿@{
-    ViewData["Title"] = "Распил kbcnjd";
+﻿@model SheetFileModel 
+@{
+    ViewData["Title"] = "Помощник в подготовке карт распила листовых материалов (OSB, фанера и т.п.)";
 }
 
+    
 <div class="text-center">
-    <h1 class="display-4">Помощник в подготовке карт распила листовых материалов (OSB, фанера и т.п.)</h1>
-</dib>
+    <p class="h2">@ViewData["Title"]</p>
+</div>
+<div class="text-left">
+    <p>Подготовьте файл со списком деталей распила в формате CSV следующего вида:<br/>
+    <span style="padding-left: 5em;">"Width","Length","Name","Qty"</span><br/>
+    где:<br/>
+    <ul>
+        <li><strong>Width</strong> - ширина детали, например 800</li>
+        <li><strong>Length</strong> - высота детали, например 600. Этот параметр будет связан с длинной стороной листа. Если важно сохранить напрвление рисунка исходного листа, то поменяйте ширину и длину местами.</li>
+        <li><strong>Name</strong> - название детали, например "Боковая стенка"</li>
+        <li><strong>Qty</strong> - количество деталей одного размера, например 20</li>
+    </ul>
+    </p>
+    <p>Совет: <i>Подотовьте файл в Excel, а затем сохраните его как CSV-файл в кодировке UTF-8.</i></p>
+</div>    
+
+<div class="container">
+@using ( Html.BeginForm("CutList", "Plates", null, FormMethod.Post, null, new { @enctype = "multipart/form-data"}) ) {
+    <div class="row">
+        <div class="col-md-12">@Html.CheckBoxFor(m => m.AllowRotation, null, new { @class = "form-control", @type="file"})</div>
+    </div>
+    <div class="row">
+        <div class="col-md-9">@Html.TextBoxFor(m => m.File, null, new { @class = "form-control", @type="file"})</div>
+        <div class="col-md-3"><button type="submit" class="btn btn-primary">Загрузить</button></div>
+    </div>
+}
+</div>
+
+
+
+
+<div class="text-center">
+    <h1 class="display-4"></h1>
+</div>
 <div class="text-left">
     <p><a href="/Plates">Распил досок</a> - на основании списка досок (стоики, балки, стропила и т.п.) готовит оптимизированную карту распила</p>
     <p><a href="/Sheets">Распил листов</a> - на основании требуемых листов готовит оптимизированную карту распила</p>
