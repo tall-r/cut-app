@@ -1,0 +1,21 @@
+# https://hub.docker.com/_/microsoft-dotnet
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /source
+
+# copy csproj and restore as distinct layers
+COPY *.sln .
+COPY Cut.Data/*.csproj ./Cut.Data/
+COPY Cut.Web/*.csproj ./Cut.Web/
+RUN dotnet restore  -r linux-arm64
+
+# copy everything else and build app
+COPY Cut.Data/. ./Cut.Data/
+COPY Cut.Web/. ./Cut.Web/
+WORKDIR /source/Cut.Web
+RUN dotnet publish -c Release -o /app -r linux-arm64 --self-contained false --no-restore
+
+# final stage/image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim-arm64v8
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["./Cut.Web"]
