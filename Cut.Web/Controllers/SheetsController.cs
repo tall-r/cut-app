@@ -29,7 +29,7 @@ namespace Cut.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index([Bind("SheetWidth,SheetHeight,AllowRotation,File")] SheetFileModel sheetModel) {
+        public IActionResult Index([Bind("SheetWidth,SheetHeight,AllowRotation,File")] SheetFileModel sheetModel) {
             if (ModelState.IsValid) {
                 // _context.Add(sheetModel);
                 // await _context.SavechangesAsync();

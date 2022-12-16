@@ -1,8 +1,54 @@
 @model SheetCutsModel
 @{
     ViewData["Title"] = "Карта распила листов";
+    var sheetCount = 0;
 }
     
 <div class="text-center">
     <p class="h2">@ViewData["Title"]</p>
+</div>
+<div>
+    <a href="#sheets">Листы</a><br>
+    <a href="#summary">Сводная таблица</a><br>
+    <a href="#wrong">Неправильные листы</a><br>
+    <p class="info">Размеры листа (мм) - @Model.SheetSize.Width x @Model.SheetSize.Height</p>
+</div>
+<div class="text-left">
+    <a name="sheets" />
+    <p class="h3">Листы</p>
+    <div class="container">
+@foreach(var s in Model.Sheets){
+    sheetCount++;
+
+        <div class="row pt-1 border-dark @(sheetCount > 0 ? "pb-ba" : "pb-bn") pb-in">
+            <div class="col border text-center p-3 fs-4 fw-bold" style="background-color: lightslategray; color: whitesmoke;">
+                <span>Лист №@sheetCount</span>
+    @foreach(var row in s.Rows) {
+                <div class="row pt-1 border-dark pb-in">
+        @foreach(var c in row) {
+            var k1 = c.Size.Width;
+                    <div class="col-md-@k1 pr-2 fs-4 border"  style="background-color: lightgray;">
+                        <span class="small">@c.Name</span><br/>
+                        <span>(@c.Size.Width мм x @c.Size.Height мм)</span>
+                    </div>
+        }
+                </div>
+    }
+            </div>
+        </div>
+}
+    </div>
+</div>
+<div class="text-left">
+    <a name="summary" />
+    <p class="h3">Сводная таблица</p>
+    <div class="container">
+    </div>
+</div>
+<div class="text-left">
+    <a name="wrong" />
+    <p class="h3">Неправильные листы</p>
+    <p class="info">Перечисленные ниже детали не соотвествуют размерам листа.<br>Уточните размер деталей либо измените размер листа.
+    <div class="container">
+    </div>
 </div>
