@@ -22,11 +22,11 @@ jobs:
       if: success()
       id: prepare
       run: |
-        echo ::set-output name=docker_plaform::linux/arm64
+        echo "docker_plaform=linux/arm64" >> $GITHUB_OUTPUT
       
     - name: Build the Docker image
       if: success()
-      run: |
-        docker buildx build --platform linux/arm64 --file docker/Dockerfile.arm64 \ 
-        --tag kfilippov/cut:arm64_$(date +%s) --tag kfilippov/cut:arm64 --tag kfilippov/cut:latest \
+      run: >
+        docker buildx build --platform linux/arm64 --file docker/Dockerfile.arm64
+        --tag kfilippov/cut:arm64_$(date +%s) --tag kfilippov/cut:arm64 --tag kfilippov/cut:latest
         --output type=image,push=true .
