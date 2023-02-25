@@ -8,12 +8,25 @@ on:
 #    branches: [ master ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout the code
+      uses: actions/checkout@v3
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    
+    - name: Prepare
+      if: success()
+      id: prepare
+      run: |
+        echo ::set-output name=docker_plaform::linux/arm64
+      
     - name: Build the Docker image
-      run: docker build . --file docker/Dockerfile.arm64 --platform linux/arm64 --tag kfilippov/cut:arm64_$(date +%s) --tag kfilippov/cut:arm64 --tag kfilippov/cut:latest
+      if: success()
+      run: |
+        docker buildx build --platform linux/arm64 --file docker/Dockerfile.arm64 \ 
+        --tag kfilippov/cut:arm64_$(date +%s) --tag kfilippov/cut:arm64 --tag kfilippov/cut:latest \
+        --output type=image,push=true .
