@@ -10,6 +10,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_PLAFORM: linux/arm64
 
     steps:
     - name: Checkout the code
@@ -22,15 +26,15 @@ jobs:
       if: success()
       id: prepare
       run: |
-        echo "docker_plaform=linux/arm64" >> $GITHUB_OUTPUT
+        echo "docker_plaform=${DOCKER_PLATFORM}" >> $GITHUB_OUTPUT
         
     - name: Docker Login
       run: |
-        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        echo "${DOCKER_PASSWORD}" | docker login --username ${DOCKER_USERNAME} --password-stdin
       
     - name: Build the Docker image
       if: success()
       run: >
-        docker buildx build --platform linux/arm64 --file docker/Dockerfile.arm64
+        docker buildx build --platform ${DOCKER_PLATFORM} --file docker/Dockerfile.arm64
         --tag kfilippov/cut:arm64_$(date +%s) --tag kfilippov/cut:arm64 --tag kfilippov/cut:latest
         --output type=image,push=true .
