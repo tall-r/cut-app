@@ -10,10 +10,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: Build_Arm64
     env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      DOCKER_PLAFORM: linux/arm64
+      DOCKER_USERNAME: '${{ secrets.DOCKER_USERNAME }}'
+      DOCKER_PASSWORD: '${{ secrets.DOCKER_PASSWORD }}'
+      DOCKER_PLAFORM: 'linux/arm64'
 
     steps:
     - name: Checkout the code
