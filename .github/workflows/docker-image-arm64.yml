@@ -1,0 +1,19 @@
+name: Docker Image CI
+
+on:
+  workflow_dispatch:
+#  push:
+#    branches: [ master ]
+#  pull_request:
+#    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file docker/Dockerfile.arm64 --platform linux/arm64 --tag kfilippov/cut:arm64_$(date +%s) --tag kfilippov/cut:arm64 --tag kfilippov/cut:latest
