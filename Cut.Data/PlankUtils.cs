@@ -102,11 +102,11 @@ namespace Cut.Data
 			using(System.IO.StreamReader sr = new System.IO.StreamReader(stream, enc)){
 				string firstLine = sr.ReadLine();
 				List<string> fields = new List<string>();
-				fields.AddRange(firstLine.Split(';'));
+				fields.AddRange(firstLine.Split(','));
 				
 				while (!sr.EndOfStream){
 					string buf = sr.ReadLine();
-					string[] values = buf.Split(';');
+					string[] values = buf.Split(',');
 					
 					Size plankSize = new Size();
 					plankSize.Width = Convert.ToInt32(values[fields.IndexOf("Width")]);

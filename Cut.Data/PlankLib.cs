@@ -36,7 +36,9 @@ namespace Cut.Data
 		public PlankLibItem FindItem(Size size){
 			if (this.Items.Count == 0) return null;
 			
-			return this.Items.Where(x => (x.Width == size.Width && x.Height == size.Height)).First();
+
+			var list = this.Items.Where(x => (x.Width == size.Width && x.Height == size.Height));
+			return (list !=null && (list.Count() > 0)) ? list.First() : null;
 		}
 		
 		public static PlankLib LoadLib(string fileName, Settings cfg){
