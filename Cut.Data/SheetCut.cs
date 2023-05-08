@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Cut.Data
 {
@@ -62,16 +63,30 @@ namespace Cut.Data
             return res;
         } 
 
-        public static List<SheetCut> LoadCuts(System.IO.Stream stream, System.Text.Encoding enc){
+        public static List<SheetCut> LoadCuts(System.IO.Stream stream, System.Text.Encoding enc, ILogger logger){
             List<SheetCut> cuts = new List<SheetCut>();
+            if (stream == null)
+                return cuts;
+
+            if (enc == null)
+                enc = System.Text.Encoding.UTF8;
+            
             using(System.IO.StreamReader sr = new System.IO.StreamReader(stream, enc)) {
   				string firstLine = sr.ReadLine();
-				List<string> fields = new List<string>();
-				fields.AddRange(firstLine.Split(';'));
+                if (string.IsNullOrEmpty(firstLine)) {
+                    while (!string.IsNullOrEmpty(firstLine)) {
+                        firstLine = sr.ReadLine();
+                    }
+                }
+				List<string> fields = new List<string>(firstLine.Split(','));
+                logger.LogDebug("Loading field names from first line: ({0})", firstLine);
+                logger.LogDebug("Found fields are: [{0} - {1} - {2} - {3}]", fields.ToArray());
+				//fields.AddRange();
 				
 				while (!sr.EndOfStream){
 					string buf = sr.ReadLine();
-					string[] values = buf.Split(';');
+                    logger.LogDebug("Loading values: ({0})", buf);
+					string[] values = buf.Split(',');
 
                     string name = values[fields.IndexOf("Name")];
                     int qty = 0;
@@ -84,6 +99,7 @@ namespace Cut.Data
 
                     for (int i=1; i <= qty; i++) {
                         SheetCut cut = new SheetCut(name, width, length);
+                        logger.LogDebug("Adding new SheetCut {0}", cut.Name);
                         cuts.Add(cut);
                     }
                 }

@@ -43,7 +43,7 @@ namespace Cut.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CutList([Bind("SheetWidth,SheetHeight,AllowRotation,File")] SheetFileModel model) {
-            if (!ModelState.IsValid || model.SheetHeight < model.SheetWidth) {
+            if (!ModelState.IsValid || model.SheetHeight > model.SheetWidth) {
                 return Error();
             }
             
@@ -55,15 +55,15 @@ namespace Cut.Web.Controllers
 
             cfg.MaxCutOff = 20;
 
-            List<SheetCut> list = Cut.Data.SheetCut.LoadCuts(model.File.OpenReadStream(), System.Text.Encoding.UTF8);
+            List<SheetCut> cuts = Cut.Data.SheetCut.LoadCuts(model.File.OpenReadStream(), System.Text.Encoding.UTF8, _logger);
 
             List<SheetCut> wrongCuts = new List<SheetCut>();
 
-            var data = SheetUtils.GenerateSheets(list, wrongCuts, model.SheetSize, model.AllowRotation, cfg);
+            List<Sheet> sheets = SheetUtils.GenerateSheets(cuts, wrongCuts, model.SheetSize, model.AllowRotation, cfg);
 
             var cutModel = new SheetCutsModel();
             cutModel.SheetSize = model.SheetSize;
-            cutModel.Sheets = data;
+            cutModel.Sheets = sheets;
             cutModel.WrongSheets = wrongCuts;
 
             return View(cutModel);
