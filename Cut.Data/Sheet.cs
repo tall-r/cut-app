@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Cut.Data
@@ -19,20 +20,34 @@ namespace Cut.Data
     {
         public Sheet()
         {
-            this.Rows = new List<List<SheetCut>>();
+            this.Rows = new List<IList<SheetCut>>();
+            this.SheetSize = new Size();
         }
 
         public Sheet(Size sheetSize): this()
         {
             if (sheetSize.Height < sheetSize.Width)
                 throw new Exception("Неверная высота листа. Высота должна быть длинее ширины.");
-            this.Size = sheetSize;
+            this.SheetSize = sheetSize;
         }
         /// <summary>
         /// Height - длинная сторона листа
         /// </summary>
         /// <value></value>
-        public Size Size { get; set; }
+        [JsonIgnore]
+        public Size SheetSize { get; set; }
+
+        [JsonPropertyName("height")]
+        public int Height {
+            get { return this.SheetSize.Height; }
+            set { this.SheetSize.Height = value; }
+        }
+
+        [JsonPropertyName("width")]
+        public int Width {
+            get { return this.SheetSize.Width; }
+            set { this.SheetSize.Width = value; }
+        }
 
         /// <summary>
         /// Положение детали на листе
@@ -40,15 +55,15 @@ namespace Cut.Data
         /// <value></value>
         //public Dictionary<SheetCut, Position> Cuts { get; private set; }
 
-        public List<List<SheetCut>> Rows { get; private set; }
+        public IList<IList<SheetCut>> Rows { get; private set; }
 
         /// <summary>
         /// Возвращает самую верхнюю линию/ряд деталей
         /// </summary>
         /// <returns></returns>
-        public List<SheetCut> GetTopRow() {
+        public IList<SheetCut> GetTopRow() {
             if (this.Rows.Count == 0) {
-                List<SheetCut> row = new List<SheetCut>();
+                IList<SheetCut> row = new List<SheetCut>();
                 this.Rows.Add(row);
                 return row;
             }
@@ -56,14 +71,14 @@ namespace Cut.Data
                 return this.Rows[this.Rows.Count - 1];
         }
 
-        public List<SheetCut> AddRow(int bladeWidth, int maxCutOff) {
+        public IList<SheetCut> AddRow(int bladeWidth, int maxCutOff) {
             if (IsSheetFull(bladeWidth, maxCutOff))
                 throw new NoMoreSpaceException();
 
             return AddRow();
         }
 
-        public List<SheetCut> AddRow() {
+        public IList<SheetCut> AddRow() {
             List<SheetCut> row = new List<SheetCut>();
             this.Rows.Add(row);
 
@@ -88,34 +103,34 @@ namespace Cut.Data
         /// <param name="bladeWidth">Толщина лезвия пила/ширина пропила</param>
         /// <param name="maxCutOff">Максимально допустимый обрезок</param>
         /// <returns>Если </returns>
-        public bool IsRowFull(List<SheetCut> row, int bladeWidth, int maxCutOff) {
+        public bool IsRowFull(IList<SheetCut> row, int bladeWidth, int maxCutOff) {
             return (GetRowSpace(row, bladeWidth) <= maxCutOff);
         }
 
         public int GetSheetSpace(int bladeWidth) {
-            return this.Size.Height - this.Rows.Sum(x => (x[0].Size.Height + bladeWidth));
+            return this.Height - this.Rows.Sum(x => (x[0].Height + bladeWidth));
         }
 
-        public int GetRowSpace(List<SheetCut> row, int bladeWidth) {
-            return this.Size.Width - row.Sum(x => (x.Size.Width + bladeWidth));
+        public int GetRowSpace(IList<SheetCut> row, int bladeWidth) {
+            return this.Width - row.Sum(x => (x.Width + bladeWidth));
         }
 
-        public Dictionary<string,object> AsJsonData() {
-            Dictionary<string,object> data = new Dictionary<string, object>();
+        // public Dictionary<string,object> AsJsonData() {
+        //     Dictionary<string,object> data = new Dictionary<string, object>();
 
-            data["height"] = this.Size.Height.ToString();
-            data["width"] = this.Size.Width.ToString();
-            List<List<Dictionary<string,string>>> rows = new List<List<Dictionary<string, string>>>();
-            foreach(var row in this.Rows) {
-                List<Dictionary<string,string>> r = new List<Dictionary<string, string>>();
-                foreach(var c in row) {
-                    r.Add(c.AsJsonData());
-                }
-                rows.Add(r);
-            }
-            data["rows"] = rows;
+        //     data["height"] = this.Height.ToString();
+        //     data["width"] = this.Width.ToString();
+        //     List<List<Dictionary<string,string>>> rows = new List<List<Dictionary<string, string>>>();
+        //     foreach(var row in this.Rows) {
+        //         List<Dictionary<string,string>> r = new List<Dictionary<string, string>>();
+        //         foreach(var c in row) {
+        //             r.Add(c.AsJsonData());
+        //         }
+        //         rows.Add(r);
+        //     }
+        //     data["rows"] = rows;
 
-            return data;
-        }
+        //     return data;
+        // }
     }
 }

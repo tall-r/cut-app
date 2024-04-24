@@ -43,7 +43,7 @@ namespace Cut.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CutList([Bind("SheetWidth,SheetHeight,AllowRotation,File")] SheetFileModel model) {
-            if (!ModelState.IsValid || model.SheetHeight > model.SheetWidth) {
+            if (!ModelState.IsValid || model.SheetHeight < model.SheetWidth) {
                 return Error();
             }
             
@@ -55,11 +55,11 @@ namespace Cut.Web.Controllers
 
             cfg.MaxCutOff = 20;
 
-            List<SheetCut> cuts = Cut.Data.SheetCut.LoadCuts(model.File.OpenReadStream(), System.Text.Encoding.UTF8, _logger);
+            IList<SheetCut> cuts = Cut.Data.SheetCut.LoadCuts(model.File.OpenReadStream(), System.Text.Encoding.UTF8, _logger);
 
-            List<SheetCut> wrongCuts = new List<SheetCut>();
+            IList<SheetCut> wrongCuts = new List<SheetCut>();
 
-            List<Sheet> sheets = SheetUtils.GenerateSheets(cuts, wrongCuts, model.SheetSize, model.AllowRotation, cfg);
+            IList<Sheet> sheets = SheetUtils.GenerateSheets(cuts, wrongCuts, model.SheetSize, model.AllowRotation, cfg);
 
             var cutModel = new SheetCutsModel();
             cutModel.SheetSize = model.SheetSize;
@@ -137,15 +137,20 @@ namespace Cut.Web.Controllers
 
             var data = SheetUtils.GenerateSheets(list, wrongCuts, size, rotaAllowed, cfg);
             Response.ContentType = "application/json";
-            Dictionary<string,object> cfgInfo = new Dictionary<string, object>();
-            cfgInfo["bladeWidth"] = cfg.BladeWidth;
-            cfgInfo["maxCutOff"] = cfg.MaxCutOff;
-            List<Dictionary<string,object>> json = new List<Dictionary<string, object>>();
-            json.Add(cfgInfo);
-            foreach(var d in data) {
-                json.Add(d.AsJsonData());
-            }
-            return Json(json);
+            var respData = new {
+                bladeWidth = cfg.BladeWidth,
+                maxCutOff = cfg.MaxCutOff,
+                sheets = data
+            };
+            // Dictionary<string,object> cfgInfo = new Dictionary<string, object>();
+            // cfgInfo["bladeWidth"] = cfg.BladeWidth;
+            // cfgInfo["maxCutOff"] = cfg.MaxCutOff;
+            // List<Dictionary<string,object>> json = new List<Dictionary<string, object>>();
+            // json.Add(cfgInfo);
+            // foreach(var d in data) {
+            //     json.Add(d.AsJsonData());
+            // }
+            return Json(respData);
         }
     }
 }

@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -35,13 +36,28 @@ namespace Cut.Data
 
         }
 
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
         /// <summary>
         /// Height - длинная сторона листа
         /// </summary>
         /// <value></value>
+        [JsonIgnore]
         public Size Size { get; set; }
+
+        [JsonPropertyName("height")]
+        public int Height {
+            get { return this.Size.Height; }
+            set { this.Size.Height = value; }
+        }
+
+        [JsonPropertyName("width")]
+        public int Width {
+            get { return this.Size.Width; }
+            set { this.Size.Width = value; }
+        }
+
 
         public void SwapSize() {
             int h = this.Size.Height;
@@ -54,17 +70,17 @@ namespace Cut.Data
             return this.Name;
         }
 
-        public Dictionary<string,string> AsJsonData() {
-            Dictionary<string,string> res = new Dictionary<string, string>();
-            res["name"] = this.Name;
-            res["height"] = this.Size.Height.ToString();
-            res["width"] = this.Size.Width.ToString();
+        // public Dictionary<string,string> AsJsonData() {
+        //     Dictionary<string,string> res = new Dictionary<string, string>();
+        //     res["name"] = this.Name;
+        //     res["height"] = this.Size.Height.ToString();
+        //     res["width"] = this.Size.Width.ToString();
 
-            return res;
-        } 
+        //     return res;
+        // } 
 
-        public static List<SheetCut> LoadCuts(System.IO.Stream stream, System.Text.Encoding enc, ILogger logger){
-            List<SheetCut> cuts = new List<SheetCut>();
+        public static IList<SheetCut> LoadCuts(System.IO.Stream stream, System.Text.Encoding enc, ILogger logger){
+            IList<SheetCut> cuts = new List<SheetCut>();
             if (stream == null)
                 return cuts;
 

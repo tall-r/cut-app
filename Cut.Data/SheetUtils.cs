@@ -25,8 +25,8 @@ namespace Cut.Data
         /// <param name="list">Список деталей</param>
         /// <param name="gs">Сторона детали, по которой крупируются наборы</param>
         /// <returns></returns>
-        public static Dictionary<int, List<SheetCut>> GroupCutsBySize(IEnumerable<SheetCut> list, GroupSide gs) {
-            Dictionary<int, List<SheetCut>> dict = new Dictionary<int, List<SheetCut>>();
+        public static Dictionary<int, IList<SheetCut>> GroupCutsBySize(IEnumerable<SheetCut> list, GroupSide gs) {
+            Dictionary<int, IList<SheetCut>> dict = new Dictionary<int, IList<SheetCut>>();
 
             foreach(SheetCut c in list) {
                 int key = 0;
@@ -37,7 +37,7 @@ namespace Cut.Data
                 else
                     break;
 
-                List<SheetCut> cuts =null;
+                IList<SheetCut> cuts =null;
 
                 if (dict.ContainsKey(key))
                     cuts = dict[key];
@@ -58,20 +58,20 @@ namespace Cut.Data
         /// <param name="list"></param>
         /// <param name="rotationAllowed"></param>
         /// <returns></returns>
-        public static Dictionary<int, List<SheetCut>> FindProperGroups(IEnumerable<SheetCut> list, bool rotationAllowed) {
-            Dictionary<int, List<SheetCut>> hset = GroupCutsBySize(list, GroupSide.gsHeight);
-            Dictionary<int, List<SheetCut>> wset = GroupCutsBySize(list, GroupSide.gsWidth);
+        public static Dictionary<int, IList<SheetCut>> FindProperGroups(IEnumerable<SheetCut> list, bool rotationAllowed) {
+            Dictionary<int, IList<SheetCut>> hset = GroupCutsBySize(list, GroupSide.gsHeight);
+            Dictionary<int, IList<SheetCut>> wset = GroupCutsBySize(list, GroupSide.gsWidth);
 
-            Dictionary<int, List<SheetCut>> rhset = null;
-            Dictionary<int, List<SheetCut>> rwset = null;
+            Dictionary<int, IList<SheetCut>> rhset = null;
+            Dictionary<int, IList<SheetCut>> rwset = null;
             if (rotationAllowed) {
                 rhset = GroupCutsBySize(list, GroupSide.gsHeight);
                 rwset = GroupCutsBySize(list, GroupSide.gsWidth);
             }
 
-            Dictionary<int, List<SheetCut>> result = (hset.Count <= wset.Count) ? hset : wset;
+            Dictionary<int, IList<SheetCut>> result = (hset.Count <= wset.Count) ? hset : wset;
             if (rotationAllowed) {
-                Dictionary<int, List<SheetCut>> rresult = (rhset.Count <= rwset.Count) ? rhset : rwset;
+                Dictionary<int, IList<SheetCut>> rresult = (rhset.Count <= rwset.Count) ? rhset : rwset;
 
                 if (result.Count > rresult.Count)
                     result = rresult;
@@ -86,29 +86,29 @@ namespace Cut.Data
         /// <param name="list">Список деталей</param>
         /// <param name="sheetSize">Размеры листа</param>
         /// <returns></returns>
-        public static List<SheetCut> GetInvalidSheetCuts(List<SheetCut> list, Size sheetSize) {
+        public static IList<SheetCut> GetInvalidSheetCuts(IList<SheetCut> list, Size sheetSize) {
             return list.Where(c => (c.Size.Height > sheetSize.Height || c.Size.Width > sheetSize.Width)).ToList();
         }
 
-        public static List<Sheet> GenerateSheets(List<SheetCut> list, List<SheetCut> wrongCuts, Size sheetSize, bool rotaionAllowed, Settings cfg) {
-            List<Sheet> result = new List<Sheet>();
+        public static IList<Sheet> GenerateSheets(IList<SheetCut> list, IList<SheetCut> wrongCuts, Size sheetSize, bool rotaionAllowed, Settings cfg) {
+            IList<Sheet> result = new List<Sheet>();
 
             wrongCuts = GetInvalidSheetCuts(list, sheetSize);
             var cuts = list.Where( c => (!wrongCuts.Contains(c)));
 
-            Dictionary<int, List<SheetCut>> cutGroups = FindProperGroups(cuts, rotaionAllowed);
+            Dictionary<int, IList<SheetCut>> cutGroups = FindProperGroups(cuts, rotaionAllowed);
 
-            List<SheetCut> usedCuts = new List<SheetCut>();
+            IList<SheetCut> usedCuts = new List<SheetCut>();
 
             Sheet lastSheet = null;
 
             foreach(int key in cutGroups.Keys.OrderByDescending(x => x)) {
-                List<SheetCut> groupCuts = cutGroups[key];
+                IList<SheetCut> groupCuts = cutGroups[key];
                 if (groupCuts != null && groupCuts.Count > 0) {
                     GroupSide side = (key == groupCuts[0].Size.Height) ? GroupSide.gsHeight : GroupSide.gsWidth;
-                    Dictionary<int, List<SheetCut>> grps2 = GroupCutsBySize(groupCuts, side == GroupSide.gsHeight ? GroupSide.gsWidth : GroupSide.gsHeight);
+                    Dictionary<int, IList<SheetCut>> grps2 = GroupCutsBySize(groupCuts, side == GroupSide.gsHeight ? GroupSide.gsWidth : GroupSide.gsHeight);
                     foreach(int gkey in grps2.Keys.OrderByDescending(x => x)) {
-                        List<SheetCut> gcuts = grps2[gkey];
+                        IList<SheetCut> gcuts = grps2[gkey];
                         foreach(SheetCut c in gcuts) {
                             if (usedCuts.Contains(c)) continue;
 
@@ -117,7 +117,7 @@ namespace Cut.Data
                                 result.Add(lastSheet);
                             }
 
-                            List<SheetCut> row = lastSheet.GetTopRow();
+                            IList<SheetCut> row = lastSheet.GetTopRow();
                             if (lastSheet.IsRowFull(row, cfg.BladeWidth, cfg.MaxCutOff)) {
                                 if (lastSheet.IsSheetFull(cfg.BladeWidth, cfg.MaxCutOff)) {
                                      result.Add(lastSheet);

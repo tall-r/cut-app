@@ -10,9 +10,9 @@ namespace Cut.Web.Models
     {
         public Cut.Data.Size SheetSize { get; set; }
 
-        public List<Cut.Data.Sheet> Sheets { get; set; }
+        public IList<Cut.Data.Sheet> Sheets { get; set; }
         
-        public List<Cut.Data.SheetCut> WrongSheets { get; set; }
+        public IList<Cut.Data.SheetCut> WrongSheets { get; set; }
         
         
     }
