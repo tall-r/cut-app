@@ -20,7 +20,7 @@ namespace Cut.Data
     {
         public Sheet()
         {
-            this.Rows = new List<IList<SheetCut>>();
+            this.Rows = new List<SheetRow>();
             this.SheetSize = new Size();
         }
 
@@ -55,15 +55,15 @@ namespace Cut.Data
         /// <value></value>
         //public Dictionary<SheetCut, Position> Cuts { get; private set; }
 
-        public IList<IList<SheetCut>> Rows { get; private set; }
+        public IList<SheetRow> Rows { get; private set; }
 
         /// <summary>
         /// Возвращает самую верхнюю линию/ряд деталей
         /// </summary>
         /// <returns></returns>
-        public IList<SheetCut> GetTopRow() {
+        public SheetRow GetTopRow() {
             if (this.Rows.Count == 0) {
-                IList<SheetCut> row = new List<SheetCut>();
+                SheetRow row = new SheetRow();
                 this.Rows.Add(row);
                 return row;
             }
@@ -71,15 +71,17 @@ namespace Cut.Data
                 return this.Rows[this.Rows.Count - 1];
         }
 
-        public IList<SheetCut> AddRow(int bladeWidth, int maxCutOff) {
+        public SheetRow AddRow(int bladeWidth, int maxCutOff) {
             if (IsSheetFull(bladeWidth, maxCutOff))
                 throw new NoMoreSpaceException();
 
             return AddRow();
         }
 
-        public IList<SheetCut> AddRow() {
-            List<SheetCut> row = new List<SheetCut>();
+        public SheetRow AddRow(int? rowHeight = null) {
+            SheetRow row = new SheetRow();
+            if (rowHeight.HasValue)
+                row.Height = rowHeight.Value;
             this.Rows.Add(row);
 
             return row;
@@ -108,7 +110,7 @@ namespace Cut.Data
         }
 
         public int GetSheetSpace(int bladeWidth) {
-            return this.Height - this.Rows.Sum(x => (x[0].Height + bladeWidth));
+            return this.Height - this.Rows.Sum(x => (x.Height + bladeWidth));
         }
 
         public int GetRowSpace(IList<SheetCut> row, int bladeWidth) {

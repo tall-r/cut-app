@@ -44,7 +44,7 @@ namespace Cut.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CutList([Bind("SheetWidth,SheetHeight,AllowRotation,File")] SheetFileModel model) {
             if (!ModelState.IsValid || model.SheetHeight < model.SheetWidth) {
-                return Error();
+                return Error("Sheet's width is great then its height.");
             }
             
             Settings cfg = new Settings();
@@ -52,8 +52,9 @@ namespace Cut.Web.Controllers
                 string jsonST = HttpContext.Request.Cookies["cut-settings"];
                 cfg = JsonSerializer.Deserialize<Cut.Data.Settings>(jsonST);
             }
-
-            cfg.MaxCutOff = 20;
+            else {
+                cfg.MaxCutOff = 20;
+            }
 
             IList<SheetCut> cuts = Cut.Data.SheetCut.LoadCuts(model.File.OpenReadStream(), System.Text.Encoding.UTF8, _logger);
 
@@ -70,9 +71,13 @@ namespace Cut.Web.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(string message = null)
         {
-            return View("Error!");
+            ErrorViewModel em = new ErrorViewModel(){
+                RequestId = HttpContext.TraceIdentifier,
+                Message = message
+            };
+            return View("Error", em);
         }
 
         public IActionResult Sheets() {

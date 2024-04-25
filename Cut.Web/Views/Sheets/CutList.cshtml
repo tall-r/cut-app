@@ -1,3 +1,4 @@
+@using Cut.Data
 @model SheetCutsModel
 @{
     ViewData["Title"] = "Карта распила листов";
@@ -24,13 +25,13 @@
             <div class="col-12 border text-center p-3 fs-4 fw-bold" style="background-color: lightslategray; color: whitesmoke;">
                 <span>Лист №@sheetCount</span>
     @foreach(var row in s.Rows) {
+        var gs = row.Side; //row.Height == row[0].Height ? GroupingSide.gsHeight : GroupingSide.gsWidth;
+                <!-- rowHeight = @row.Height -->
                 <div class="row pt-1 border-dark pb-in">
         @foreach(var c in row) {
-            double k0 = ((double)c.Size.Height / Model.SheetSize.Height) * 12;
-                    <!-- @c.Size.Height /
-                         @Model.SheetSize.Height
-                          = @k0 -->
-            int k1 = (int)Math.Round(k0, 0);
+            double k0 = (gs == GroupingSide.gsWidth) ? ((double)c.Size.Height / Model.SheetSize.Height) : ((double)c.Size.Width / Model.SheetSize.Width);
+                    <!-- @gs => @k0 -->
+            int k1 = (int)Math.Round(k0 * 12, 0);
                     <div class="col-md-@k1 pr-2 fs-4 border"  style="background-color: lightgray;">
                         <span class="small">@c.Name</span><br/>
                         <span>(@c.Size.Width мм x @c.Size.Height мм)</span>
